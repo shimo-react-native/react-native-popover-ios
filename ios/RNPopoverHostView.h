@@ -36,7 +36,7 @@
  
  @see https://developer.apple.com/documentation/uikit/uipopoverpresentationcontroller/1622313-sourceview
  */
-@property (nonatomic, assign) NSInteger sourceViewReactTag;
+@property (nonatomic, assign) NSInteger sourceView;
 
 /**
  The rectangle in the specified view in which to anchor the popover.

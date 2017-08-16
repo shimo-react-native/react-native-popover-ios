@@ -10,7 +10,7 @@ A native popover component for react-native, iOS only.
 	* [parameters](#parameters)
 		* [visible](#visible)
 		* [backgroundColor](#backgroundcolor)
-		* [sourceViewReactTag](#sourceviewreacttag)
+		* [sourceView](#sourceView)
 		* [sourceRect](#sourcerect)
 		* [permittedArrowDirections](#permittedarrowdirections)
 		* [preferredContentSize](#preferredcontentsize)
@@ -35,7 +35,7 @@ back ground color.
 
 example: '#FFF'
 
-### sourceViewReactTag
+### sourceView
 
 the reactTag of The view containing the anchor rectangle for the popover.
 
@@ -77,7 +77,9 @@ a function that will be called once the popover has been hidden.
 ## Example
 
 ```js
-<Popover sourceViewReactTag={this.state.target}
+import Popover from 'react-native-ios-popover';
+
+<Popover sourceView={this.state.target}
          onShow={this._onShow}
          onHide={this._onHide}
          preferredContentSize={[200, 200]}

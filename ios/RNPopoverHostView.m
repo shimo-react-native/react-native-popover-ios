@@ -44,7 +44,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _isPresented = NO;
         _animated = YES;
         _backgroundColor = [UIColor whiteColor];
-        _sourceViewReactTag = NSIntegerMax;
+        _sourceView = NSIntegerMax;
         _sourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
         _preferredContentSize = CGSizeZero;
@@ -85,13 +85,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
         _popoverHostViewController.view.backgroundColor = _backgroundColor;
-        if (_sourceViewReactTag == NSIntegerMax) {
-            NSLog(@"sourceViewReactTag must be set");
+        if (_sourceView == NSIntegerMax) {
+            NSLog(@"sourceView must be set");
             return;
         }
-        UIView *sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
+        UIView *sourceView = [_bridge.uiManager viewForReactTag:@(_sourceView)];
         if (!sourceView) {
-            NSLog(@"sourceViewReactTag is invalid");
+            NSLog(@"sourceView is invalid");
             return;
         }
         [self updateContentSize];

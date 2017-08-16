@@ -38,9 +38,9 @@ export default class extends Component {
      */
     backgroundColor: PropTypes.string,
     /**
-     * The `sourceViewReactTag` prop is the reactTag of The view containing the anchor rectangle for the popover
+     * The `sourceView` prop is the reactTag of The view containing the anchor rectangle for the popover
      */
-    sourceViewReactTag: PropTypes.number,
+    sourceView: PropTypes.number,
     /**
      * The `sourceRect` prop is the rectangle in the specified view in which to anchor the popover.
      */

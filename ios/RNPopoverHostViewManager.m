@@ -27,7 +27,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(animated, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(sourceViewReactTag, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(sourceView, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(sourceRect, CGRect)
 RCT_EXPORT_VIEW_PROPERTY(permittedArrowDirections, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(preferredContentSize, CGSize)

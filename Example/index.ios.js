@@ -97,7 +97,7 @@ export default class Example extends Component {
 
   _renderWrapperPopover = (content) => {
     return (
-      <Popover sourceViewReactTag={this.state.target}
+      <Popover sourceView={this.state.target}
                onShow={this._onShow}
                onHide={this._onHide}
                preferredContentSize={[200, 200]}
