@@ -9,7 +9,6 @@
 #import "RNPopoverHostViewManager.h"
 
 #import "RNPopoverHostView.h"
-#import "RNPopoverShadowView.h"
 #import "RNPopoverHostViewController.h"
 
 #import <React/RCTBridge.h>
@@ -29,6 +28,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(animated, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewReactTag, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(sourceRect, CGRect)
 RCT_EXPORT_VIEW_PROPERTY(permittedArrowDirections, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(preferredContentSize, CGSize)
 RCT_EXPORT_VIEW_PROPERTY(onShow, RCTDirectEventBlock)
@@ -42,11 +42,6 @@ RCT_EXPORT_VIEW_PROPERTY(onHide, RCTDirectEventBlock)
     }
     [_hostViews addObject:view];
     return view;
-}
-
-- (RCTShadowView *)shadowView
-{
-    return [[RNPopoverShadowView alloc] init];
 }
 
 RCT_EXPORT_METHOD(presentPopoverWithOptions:(NSDictionary *)options

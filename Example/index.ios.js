@@ -26,13 +26,48 @@ export default class Example extends Component {
     this.state = {
       popoverVisible: false,
       target: 0,
+      permittedArrowDirections: [0]
     };
   }
 
-  _onPressButton = (event) => {
+  _onPresentLeft = (event) => {
     this.setState({
       popoverVisible: true,
-      target: event.target
+      target: event.target,
+      permittedArrowDirections: [2]
+    });
+  };
+
+  _onPresentRight = (event) => {
+    this.setState({
+      popoverVisible: true,
+      target: event.target,
+      permittedArrowDirections: [3]
+    });
+  };
+
+  _onPresentTop = (event) => {
+    console.log('_onPresent');
+    this.setState({
+      popoverVisible: true,
+      target: event.target,
+      permittedArrowDirections: [0]
+    });
+  };
+
+  _onPresentBottom = (event) => {
+    this.setState({
+      popoverVisible: true,
+      target: event.target,
+      permittedArrowDirections: [1]
+    });
+  };
+
+  _onDismiss = () => {
+    console.log('_onDismiss');
+    this.setState({
+      popoverVisible: false,
+      target: 0
     });
   };
 
@@ -48,9 +83,26 @@ export default class Example extends Component {
     })
   };
 
-  _renderPopover = () => {
+  _renderPopoverContent = () => {
     return (
-      <Popover sourceViewReactTag={this.state.target} onShow={this._onShow} onHide={this._onHide}>
+      <View style={styles.popoverContainer}>
+        <TouchableHighlight onPress={this._onDismiss}>
+          <Text style={{ color: 'red' }}>
+            Dismiss Popover
+          </Text>
+        </TouchableHighlight>
+      </View>
+    )
+  };
+
+  _renderWrapperPopover = (content) => {
+    return (
+      <Popover sourceViewReactTag={this.state.target}
+               onShow={this._onShow}
+               onHide={this._onHide}
+               preferredContentSize={[200, 200]}
+               permittedArrowDirections={this.state.permittedArrowDirections}>
+        {content}
       </Popover>
     )
   };
@@ -58,12 +110,27 @@ export default class Example extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight onPress={this._onPressButton}>
-          <Text style={{ color: 'red' }}>
-            Popover
+        <TouchableHighlight style={styles.presentButton} onPress={this._onPresentLeft}>
+          <Text style={styles.dismissText}>
+            Present Left Arrow Popover
           </Text>
         </TouchableHighlight>
-        {this.state.popoverVisible && this._renderPopover()}
+        <TouchableHighlight style={styles.presentButton} onPress={this._onPresentRight}>
+          <Text style={styles.dismissText}>
+            Present Right Arrow Popover
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.presentButton} onPress={this._onPresentTop}>
+          <Text style={styles.dismissText}>
+            Present Top Arrow Popover
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.presentButton} onPress={this._onPresentBottom}>
+          <Text style={styles.dismissText}>
+            Present Bottom Arrow Popover
+          </Text>
+        </TouchableHighlight>
+        {this.state.popoverVisible && this._renderWrapperPopover(this._renderPopoverContent)}
       </View>
     );
   }
@@ -76,16 +143,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  popoverContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#666',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  presentButton: {
+    marginVertical: 20
   },
+  dismissText: {
+    color: 'red'
+  }
 });
 
 AppRegistry.registerComponent('Example', () => Example);

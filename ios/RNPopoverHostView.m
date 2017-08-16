@@ -13,6 +13,8 @@
 #import <React/RCTUIManager.h>
 #import <React/RCTUtils.h>
 #import <React/UIView+React.h>
+#import <React/RCTShadowView.h>
+#import <React/RCTTouchHandler.h>
 
 #import "RNPopoverHostViewController.h"
 
@@ -25,7 +27,8 @@
 @implementation RNPopoverHostView {
     __weak RCTBridge *_bridge;
     BOOL _isPresented;
-    UIView *_reactSubview;
+    RCTTouchHandler *_touchHandler;
+    UIView *_contentView;
 }
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame
@@ -41,27 +44,34 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _isPresented = NO;
         _animated = YES;
         _backgroundColor = [UIColor whiteColor];
-        _sourceViewReactTag = 0;
+        _sourceViewReactTag = NSIntegerMax;
+        _sourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
         _preferredContentSize = CGSizeZero;
         _popoverHostViewController = [[RNPopoverHostViewController alloc] init];
         _popoverHostViewController.popoverPresentationController.delegate = self;
+        _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
     }
     return self;
 }
 
 - (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
-    RCTAssert(_reactSubview == nil, @"Modal view can only have one subview");
+    RCTAssert(_contentView == nil, @"Modal view can only have one subview");
     [super insertReactSubview:subview atIndex:atIndex];
-
-    _reactSubview = subview;
+    
+    [_touchHandler attachToView:subview];
+//    subview.frame = _popoverHostViewController.view.bounds;
+//    subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [_popoverHostViewController.view insertSubview:subview atIndex:0];
+    _contentView = subview;
 }
 
 - (void)removeReactSubview:(UIView *)subview {
-    RCTAssert(subview == _reactSubview, @"Cannot remove view other than modal view");
+    RCTAssert(subview == _contentView, @"Cannot remove view other than modal view");
     [super removeReactSubview:subview];
-
-    _reactSubview = nil;
+    
+    [_touchHandler detachFromView:subview];
+    _contentView = nil;
 }
 
 - (void)didUpdateReactSubviews {
@@ -75,8 +85,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
         _popoverHostViewController.view.backgroundColor = _backgroundColor;
-        if (!_sourceViewReactTag) {
-            NSLog(@"sourceViewReactTag must be grater then 0");
+        if (_sourceViewReactTag == NSIntegerMax) {
+            NSLog(@"sourceViewReactTag must be set");
             return;
         }
         UIView *sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
@@ -84,8 +94,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             NSLog(@"sourceViewReactTag is invalid");
             return;
         }
+        [self updateContentSize];
         _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
-        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectMake(CGRectGetWidth(sourceView.frame) / 2.0, CGRectGetHeight(sourceView.frame) / 2.0, 1.0, 1.0);
+        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.frame : _sourceRect;
         _popoverHostViewController.popoverPresentationController.backgroundColor = _backgroundColor;
         _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
         if (!CGSizeEqualToSize(CGSizeZero, _preferredContentSize)) {
@@ -147,6 +158,28 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         }
     }
     return permittedArrowDirections;
+}
+
+- (void)updateContentSize {
+    dispatch_sync(RCTGetUIManagerQueue(), ^{
+        RCTShadowView *shadowView = [_bridge.uiManager shadowViewForReactTag:_contentView.reactTag];
+        if (shadowView
+            && !CGSizeEqualToSize(_preferredContentSize, CGSizeZero)
+            && !CGSizeEqualToSize(shadowView.size, _preferredContentSize)) {
+            shadowView.size = _preferredContentSize;
+            [_bridge.uiManager setNeedsLayout];
+        }
+    });
+}
+
+#pragma mark - Setter
+
+- (void)setPreferredContentSize:(CGSize)preferredContentSize {
+    if (CGSizeEqualToSize(_preferredContentSize, preferredContentSize)) {
+        return;
+    }
+    _preferredContentSize = preferredContentSize;
+    [self updateContentSize];
 }
 
 @end

@@ -10,8 +10,21 @@ import {
   Platform,
   Animated
 } from 'react-native';
+const I18nManager = require('I18nManager');
 
 const RNPopoverHostView = requireNativeComponent('RNPopoverHostView');
+const side = I18nManager.isRTL ? 'right' : 'left';
+
+const styles = StyleSheet.create({
+  popover: {
+    position: 'absolute',
+  },
+  container: {
+    position: 'absolute',
+    [side] : 0,
+    top: 0,
+  }
+});
 
 export default class extends Component {
   static displayName = 'Popover';
@@ -20,6 +33,41 @@ export default class extends Component {
      * The `visible` prop determines whether your popover is visible.
      */
     visible: PropTypes.bool,
+    /**
+     * The `backgroundColor` prop set back ground color. Like '#FFF'
+     */
+    backgroundColor: PropTypes.string,
+    /**
+     * The `sourceViewReactTag` prop is the reactTag of The view containing the anchor rectangle for the popover
+     */
+    sourceViewReactTag: PropTypes.number,
+    /**
+     * The `sourceRect` prop is the rectangle in the specified view in which to anchor the popover.
+     */
+    sourceRect: PropTypes.array,
+    /**
+     * The arrow directions that you prefer for the popover.
+     *
+     * 0: up
+     * 1: down
+     * 2: left
+     * 3: right
+     *
+     * Like [0, 1, 2, 3]
+     */
+    permittedArrowDirections: PropTypes.array,
+    /**
+     * The preferred size for the view controller’s view. Like [200, 200]
+     */
+    preferredContentSize: PropTypes.array,
+    /**
+     * The `onShow` prop allows passing a function that will be called once the popover has been shown.
+     */
+    onShow: PropTypes.func,
+    /**
+     * The `onHide` prop allows passing a function that will be called once the popover has been hidden.
+     */
+    onHide: PropTypes.func,
   };
 
   static defaultProps = {
@@ -27,15 +75,19 @@ export default class extends Component {
   };
 
   render() {
-    const { visible, child } = this.props;
+    const { visible, children } = this.props;
 
     if (visible === false) {
       return null;
     }
 
+    const innerChildren = children && children();
+
     return (
-      <RNPopoverHostView {...this.props}>
-        
+      <RNPopoverHostView style={styles.popover} {...this.props}>
+        <View style={styles.container}>
+          {innerChildren}
+        </View>
       </RNPopoverHostView>
     );
   }
