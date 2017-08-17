@@ -97,11 +97,13 @@ export default class Example extends Component {
 
   _renderWrapperPopover = (content) => {
     return (
-      <Popover sourceView={this.state.target}
-               onShow={this._onShow}
-               onHide={this._onHide}
-               preferredContentSize={[200, 200]}
-               permittedArrowDirections={this.state.permittedArrowDirections}>
+      <Popover
+        sourceView={this.state.target}
+        onShow={this._onShow}
+        onHide={this._onHide}
+        preferredContentSize={[200, 200]}
+        animated={false}
+        permittedArrowDirections={this.state.permittedArrowDirections}>
         {content}
       </Popover>
     )

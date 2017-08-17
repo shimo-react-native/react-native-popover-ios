@@ -18,6 +18,9 @@ const side = I18nManager.isRTL ? 'right' : 'left';
 const styles = StyleSheet.create({
   popover: {
     position: 'absolute',
+    overflow: 'hidden',
+    opacity: 0,
+    backgroundColor:'transparent'
   },
   container: {
     position: 'absolute',
@@ -34,9 +37,17 @@ export default class extends Component {
      */
     visible: PropTypes.bool,
     /**
-     * The `backgroundColor` prop set back ground color. Like '#FFF'
+     * The `animated` prop determines whether present or dismiss popover use animation.
      */
-    backgroundColor: PropTypes.string,
+    animated: PropTypes.bool,
+    /**
+     * The `cancelable` prop determines whether dismiss popover when clicking the out space.
+     */
+    cancelable: PropTypes.bool,
+    /**
+     * The `popoverBackgroundColor` prop set popover back ground color. Like '#FFF'
+     */
+    popoverBackgroundColor: PropTypes.string,
     /**
      * The `sourceView` prop is the reactTag of The view containing the anchor rectangle for the popover
      */
@@ -84,7 +95,9 @@ export default class extends Component {
     const innerChildren = children && children();
 
     return (
-      <RNPopoverHostView style={styles.popover} {...this.props}>
+      <RNPopoverHostView
+        style={styles.popover}
+        {...this.props}>
         <View style={styles.container}>
           {innerChildren}
         </View>
