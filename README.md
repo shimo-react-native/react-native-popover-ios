@@ -1,4 +1,4 @@
-# react-native-ios-popover
+# react-native-popover-ios
 
 A native popover component for react-native, iOS only.
 
@@ -6,7 +6,7 @@ A native popover component for react-native, iOS only.
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 <!-- code_chunk_output -->
 
-* [react-native-ios-popover](#react-native-ios-popover)
+* [react-native-popover-ios](#react-native-popover-ios)
 	* [parameters](#parameters)
 		* [visible](#visible)
 		* [backgroundColor](#backgroundcolor)
@@ -77,7 +77,7 @@ a function that will be called once the popover has been hidden.
 ## Example
 
 ```js
-import Popover from 'react-native-ios-popover';
+import Popover from 'react-native-popover-ios';
 
 <Popover sourceView={this.state.target}
          onShow={this._onShow}

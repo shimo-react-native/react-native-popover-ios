@@ -1,5 +1,5 @@
 {
-  "name": "react-native-ios-popover",
+  "name": "react-native-popover-ios",
   "version": "0.0.1",
   "description": "A native popover component for react-native, iOS only.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shimohq/react-native-ios-popover.git"
+    "url": "git+https://github.com/shimohq/react-native-popover-ios.git"
   },
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   "author": "Bell <bell@greedlab.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shimohq/react-native-ios-popover/issues"
+    "url": "https://github.com/shimohq/react-native-popover-ios/issues"
   },
-  "homepage": "https://github.com/shimohq/react-native-ios-popover#readme"
+  "homepage": "https://github.com/shimohq/react-native-popover-ios#readme"
 }

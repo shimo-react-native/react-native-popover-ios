@@ -12,7 +12,7 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
-import Popover from 'react-native-ios-popover';
+import Popover from 'react-native-popover-ios';
 
 getWebViewHandle = () => {
   return ReactNative.findNodeHandle(this.refs[RCT_WEBVIEW_REF]);
