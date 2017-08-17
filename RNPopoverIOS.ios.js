@@ -18,6 +18,7 @@ const side = I18nManager.isRTL ? 'right' : 'left';
 const styles = StyleSheet.create({
   popover: {
     position: 'absolute',
+    overflow: 'hidden'
   },
   container: {
     position: 'absolute',
@@ -84,7 +85,10 @@ export default class extends Component {
     const innerChildren = children && children();
 
     return (
-      <RNPopoverHostView style={styles.popover} {...this.props}>
+      <RNPopoverHostView
+        style={styles.popover}
+        transparent={false}
+        {...this.props}>
         <View style={styles.container}>
           {innerChildren}
         </View>
