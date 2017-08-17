@@ -27,11 +27,12 @@ A native popover component for react-native, iOS only.
 ```js
 import Popover from 'react-native-popover-ios';
 
-<Popover sourceView={6}
-         onShow={this._onShow}
-         onHide={this._onHide}
-         preferredContentSize={[200, 200]}
-         permittedArrowDirections=[0, 2]>
+<Popover
+  sourceView={6}
+  onShow={this._onShow}
+  onHide={this._onHide}
+  preferredContentSize={[200, 200]}
+  permittedArrowDirections=[0, 2]>
   {content}
 </Popover>
 ```
