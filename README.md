@@ -10,7 +10,7 @@ A native popover component for react-native, iOS only.
 	* [parameters](#parameters)
 		* [visible](#visible)
 		* [backgroundColor](#backgroundcolor)
-		* [sourceView](#sourceView)
+		* [sourceView](#sourceview)
 		* [sourceRect](#sourcerect)
 		* [permittedArrowDirections](#permittedarrowdirections)
 		* [preferredContentSize](#preferredcontentsize)
