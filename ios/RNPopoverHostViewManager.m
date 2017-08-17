@@ -61,7 +61,7 @@ RCT_EXPORT_METHOD(presentPopoverWithOptions:(NSDictionary *)options
 
 #pragma mark - RNPopoverHostViewInteractor
 
-- (void)presentPopoverHostView:(RNPopoverHostView *)popoverHostView withViewController:(RNPopoverHostViewController *)viewController animated:(BOOL)animated {
+- (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nonnull)viewController animated:(BOOL)animated {
     dispatch_block_t completionBlock = ^{
         if (popoverHostView.onShow) {
             popoverHostView.onShow(nil);
@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(presentPopoverWithOptions:(NSDictionary *)options
     [popoverHostView.reactViewController presentViewController:viewController animated:animated completion:completionBlock];
 }
 
-- (void)dismissPopoverHostView:(RNPopoverHostView *)popoverHostView withViewController:(RNPopoverHostViewController *)viewController animated:(BOOL)animated {
+- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {
     dispatch_block_t completionBlock = ^{
         if (popoverHostView.onHide) {
             popoverHostView.onHide(nil);

@@ -102,6 +102,7 @@ export default class Example extends Component {
         onShow={this._onShow}
         onHide={this._onHide}
         preferredContentSize={[200, 200]}
+        animated={false}
         permittedArrowDirections={this.state.permittedArrowDirections}>
         {content}
       </Popover>

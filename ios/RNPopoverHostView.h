@@ -29,7 +29,9 @@
 #pragma mark - prop
 
 @property (nonatomic, assign) BOOL animated;
-@property (nullable, nonatomic, strong) UIColor *backgroundColor;
+
+@property (nonatomic, assign) BOOL cancelable;
+@property (nullable, nonatomic, strong) UIColor *popoverBackgroundColor;
 
 /**
  reactTag for The view containing the anchor rectangle for the popover.

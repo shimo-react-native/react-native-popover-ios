@@ -43,7 +43,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _bridge = bridge;
         _isPresented = NO;
         _animated = YES;
-        _backgroundColor = [UIColor whiteColor];
+        _cancelable = YES;
+        _popoverBackgroundColor = [UIColor whiteColor];
         _sourceView = NSIntegerMax;
         _sourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
@@ -57,11 +58,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 - (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
     RCTAssert(_contentView == nil, @"Modal view can only have one subview");
+    
     [super insertReactSubview:subview atIndex:atIndex];
     
     [_touchHandler attachToView:subview];
-//    subview.frame = _popoverHostViewController.view.bounds;
-//    subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    subview.frame = _popoverHostViewController.view.bounds;
+    subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [_popoverHostViewController.view insertSubview:subview atIndex:0];
     _contentView = subview;
 }
@@ -84,7 +86,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     if (!_isPresented && self.window) {
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
-        _popoverHostViewController.view.backgroundColor = _backgroundColor;
+        _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
         if (_sourceView == NSIntegerMax) {
             NSLog(@"sourceView must be set");
             return;
@@ -94,17 +96,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             NSLog(@"sourceView is invalid");
             return;
         }
+        _isPresented = YES;
         [self updateContentSize];
         _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
         _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.frame : _sourceRect;
-        _popoverHostViewController.popoverPresentationController.backgroundColor = _backgroundColor;
+        _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
         _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
         if (!CGSizeEqualToSize(CGSizeZero, _preferredContentSize)) {
             _popoverHostViewController.preferredContentSize = _preferredContentSize;
         }
-
+        
         [_delegate presentPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
-        _isPresented = YES;
     }
 }
 
@@ -128,9 +130,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 // Called on the delegate when the user has taken action to dismiss the popover. This is not called when the popover is dimissed programatically.
 - (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController {
+    _isPresented = NO;
     if (_onHide) {
         _onHide(nil);
     }
+}
+
+- (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    return _cancelable;
 }
 
 #pragma mark - Popover

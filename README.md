@@ -10,7 +10,9 @@ A native popover component for react-native, iOS only.
 	* [Usage](#usage)
 	* [parameters](#parameters)
 		* [visible](#visible)
-		* [backgroundColor](#backgroundcolor)
+		* [animated](#animated)
+		* [cancelable](#cancelable)
+		* [popoverBackgroundColor](#popoverbackgroundcolor)
 		* [sourceView](#sourceview)
 		* [sourceRect](#sourcerect)
 		* [permittedArrowDirections](#permittedarrowdirections)
@@ -37,7 +39,7 @@ import Popover from 'react-native-popover-ios';
 </Popover>
 ```
 
-## parameters
+## properties
 
 ### visible
 
@@ -45,11 +47,23 @@ import Popover from 'react-native-popover-ios';
 
 default: true
 
-### backgroundColor
+### animated
 
-back ground color.
+> determines whether present or dismiss popover use animation.
 
-default: '#FFF'
+default: true
+
+### cancelable
+
+> determines whether dismiss popover when clicking the out space.
+
+default: true
+
+### popoverBackgroundColor
+
+the back ground color of popover.
+
+default: 'white'
 
 ### sourceView
 
