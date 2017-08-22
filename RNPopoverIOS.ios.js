@@ -8,11 +8,12 @@ import {
   Text,
   requireNativeComponent,
   Platform,
-  Animated
+  Animated,
+  I18nManager
 } from 'react-native';
-const I18nManager = require('I18nManager');
 
 const RNPopoverHostView = requireNativeComponent('RNPopoverHostView');
+const RNPopoverHostViewManager = NativeModules.RNPopoverHostViewManager;
 const side = I18nManager.isRTL ? 'right' : 'left';
 
 const styles = StyleSheet.create({
@@ -20,11 +21,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     overflow: 'hidden',
     opacity: 0,
-    backgroundColor:'transparent'
+    backgroundColor: 'transparent'
   },
   container: {
     position: 'absolute',
-    [side] : 0,
+    [side]: 0,
     top: 0,
   }
 });
@@ -85,6 +86,10 @@ export default class extends Component {
     visible: true,
   };
 
+  static dismiss = (reactTag, animated = true) => {
+    return RNPopoverHostViewManager.dismiss(reactTag, animated);
+  };
+
   render() {
     const { visible, children } = this.props;
 
@@ -92,14 +97,12 @@ export default class extends Component {
       return null;
     }
 
-    const innerChildren = children && children();
-
     return (
       <RNPopoverHostView
         style={styles.popover}
         {...this.props}>
         <View style={styles.container}>
-          {innerChildren}
+          {children}
         </View>
       </RNPopoverHostView>
     );
