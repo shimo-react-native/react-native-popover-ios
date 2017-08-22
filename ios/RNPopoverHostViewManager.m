@@ -12,10 +12,15 @@
 #import "RNPopoverHostViewController.h"
 
 #import <React/RCTBridge.h>
+#import <React/RCTUIManager.h>
 #import <React/RCTShadowView.h>
 #import <React/RCTUtils.h>
 
 @interface RNPopoverHostViewManager() <RNPopoverHostViewInteractor>
+
+@property (nonatomic, copy) RCTPromiseResolveBlock dismissResolve;
+@property (nonatomic, assign) BOOL userDismiss;
+@property (nonatomic, assign) BOOL dismissAnimated;
 
 @end
 
@@ -44,10 +49,26 @@ RCT_EXPORT_VIEW_PROPERTY(onHide, RCTDirectEventBlock)
     return view;
 }
 
-RCT_EXPORT_METHOD(presentPopoverWithOptions:(NSDictionary *)options
-                  callback:(RCTResponseSenderBlock)callback)
+RCT_REMAP_METHOD(dismiss,
+                 dismissWithReactTag:(nonnull NSNumber *)reactTag animated:(BOOL)animated Resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    
+    __weak typeof(self) weakSelf = self;
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+        __kindof UIView *view = viewRegistry[reactTag];
+        if ([view isKindOfClass:[RNPopoverHostView class]]) {
+            RNPopoverHostView *hostView = view;
+            if (hostView.presented) {
+                weakSelf.userDismiss = YES;
+                weakSelf.dismissAnimated = animated;
+                weakSelf.dismissResolve = resolve;
+                [hostView dismissViewController];
+            } else {
+                resolve(nil);
+            }
+        } else {
+            reject(@"parameters error", [NSString stringWithFormat:@"invalid parameter: %@", [reactTag stringValue]], nil);
+        }
+    }];
 }
 
 #pragma mark - RCTInvalidating
@@ -72,13 +93,18 @@ RCT_EXPORT_METHOD(presentPopoverWithOptions:(NSDictionary *)options
 }
 
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {
-    dispatch_block_t completionBlock = ^{
+    __weak typeof(self) weakSelf = self;
+    [viewController dismissViewControllerAnimated: self.userDismiss ? self.dismissAnimated : animated completion:^{
+        if (weakSelf.dismissResolve) {
+            weakSelf.dismissResolve(nil);
+            weakSelf.dismissResolve = nil;
+        }
         if (popoverHostView.onHide) {
             popoverHostView.onHide(nil);
         }
-    };
+        weakSelf.userDismiss = NO;
+    }];
     
-    [viewController dismissViewControllerAnimated:animated completion:completionBlock];
 }
 
 @end

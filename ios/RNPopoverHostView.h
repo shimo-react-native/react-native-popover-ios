@@ -10,6 +10,7 @@
 
 #import <React/RCTInvalidating.h>
 #import <React/RCTView.h>
+#import <React/RCTBridgeModule.h>
 
 @class RCTBridge;
 @class RNPopoverHostView;
@@ -70,8 +71,15 @@
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onShow;
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onHide;
 
+
+#pragma mark - readonly
+
+@property (nonatomic, assign, readonly) BOOL presented;
+
 #pragma mark - Method
 
 - (instancetype _Nonnull )initWithBridge:(RCTBridge *_Nullable)bridge NS_DESIGNATED_INITIALIZER;
+
+- (void)dismissViewController;
 
 @end
