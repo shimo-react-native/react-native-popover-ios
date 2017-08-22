@@ -8,7 +8,6 @@ A native popover component for react-native, iOS only.
 
 * [react-native-popover-ios](#react-native-popover-ios)
 	* [Install](#install)
-	* [Usage](#usage)
 	* [properties](#properties)
 		* [visible](#visible)
 		* [animated](#animated)
@@ -20,6 +19,8 @@ A native popover component for react-native, iOS only.
 		* [preferredContentSize](#preferredcontentsize)
 		* [onShow](#onshow)
 		* [onHide](#onhide)
+	* [Method](#method)
+		* [dismiss](#dismiss)
 	* [How to use the Example Project](#how-to-use-the-example-project)
 
 <!-- /code_chunk_output -->
@@ -44,22 +45,30 @@ link
 react-native link react-native-popover-ios
 ```
 
-## Usage
+## properties
+
+Example:
 
 ```js
 import Popover from 'react-native-popover-ios';
 
-<Popover
-  sourceView={6}
-  onShow={this._onShow}
-  onHide={this._onHide}
-  preferredContentSize={[200, 200]}
-  permittedArrowDirections={[0, 2]}>
-  {content}
-</Popover>
-```
+_onPress = (event) => {
+	 this.render(event.target);
+ };
 
-## properties
+render(reactTag) {
+	return (
+		<Popover
+		  sourceView={reactTag}
+		  onShow={this._onShow}
+		  onHide={this._onHide}
+		  preferredContentSize={[200, 200]}
+		  permittedArrowDirections={[0, 2]}>
+		  {content}
+		</Popover>
+	)
+}
+```
 
 ### visible
 
@@ -123,6 +132,28 @@ example: [200, 400], 200 is the width and 400 is the height
 ### onHide
 
 > a function that will be called once the popover has been hidden.
+
+## Method
+
+### dismiss
+
+dismiss popover
+
+* `reactTag`: react tag of The popover
+* `animated`: whether dismiss use animation, default `true`
+
+Example:
+
+```js
+import Popover from 'react-native-popover-ios';
+
+const reactTag = ReactNative.findNodeHandle(this.refs.popover);
+try {
+	await Popover.dismiss(reactTag, false);
+} catch (e) {
+	console.error('error', e);
+}
+```
 
 ## How to use the Example Project
 
