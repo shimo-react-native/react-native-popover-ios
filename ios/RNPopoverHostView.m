@@ -22,11 +22,15 @@
 
 @property (nonatomic, strong) RNPopoverHostViewController *popoverHostViewController;
 
+@property (nonatomic, copy) RCTPromiseResolveBlock dismissResolve;
+@property (nonatomic, copy) RCTPromiseRejectBlock dismissReject;
+@property (nonatomic, assign) BOOL presented;
+
 @end
 
 @implementation RNPopoverHostView {
     __weak RCTBridge *_bridge;
-    BOOL _isPresented;
+    
     RCTTouchHandler *_touchHandler;
     UIView *_contentView;
 }
@@ -41,7 +45,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (instancetype _Nonnull)initWithBridge:(RCTBridge *_Nullable)bridge {
     if ((self = [super initWithFrame:CGRectZero])) {
         _bridge = bridge;
-        _isPresented = NO;
+        _presented = NO;
         _animated = YES;
         _cancelable = YES;
         _popoverBackgroundColor = [UIColor whiteColor];
@@ -83,7 +87,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (void)didMoveToWindow {
     [super didMoveToWindow];
 
-    if (!_isPresented && self.window) {
+    if (!_presented && self.window) {
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
@@ -96,7 +100,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             NSLog(@"sourceView is invalid");
             return;
         }
-        _isPresented = YES;
+        _presented = YES;
         [self updateContentSize];
         _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
         _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.frame : _sourceRect;
@@ -113,8 +117,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
 
-    if (_isPresented && !self.superview) {
-        [self dismissModalViewController];
+    if (_presented && !self.superview) {
+        [self dismissViewController];
     }
 }
 
@@ -122,15 +126,24 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 - (void)invalidate {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self dismissModalViewController];
+        [self dismissViewController];
     });
+}
+
+#pragma mark - Public
+
+- (void)dismissViewController {
+    if (_presented) {
+        [_delegate dismissPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
+        _presented = NO;
+    }
 }
 
 #pragma mark - UIPopoverPresentationControllerDelegate
 
 // Called on the delegate when the user has taken action to dismiss the popover. This is not called when the popover is dimissed programatically.
 - (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController {
-    _isPresented = NO;
+    _presented = NO;
     if (_onHide) {
         _onHide(nil);
     }
@@ -138,15 +151,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 - (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
     return _cancelable;
-}
-
-#pragma mark - Popover
-
-- (void)dismissModalViewController {
-    if (_isPresented) {
-        [_delegate dismissPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
-        _isPresented = NO;
-    }
 }
 
 #pragma mark - Private

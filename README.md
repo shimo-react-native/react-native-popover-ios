@@ -7,8 +7,9 @@ A native popover component for react-native, iOS only.
 <!-- code_chunk_output -->
 
 * [react-native-popover-ios](#react-native-popover-ios)
+	* [Install](#install)
 	* [Usage](#usage)
-	* [parameters](#parameters)
+	* [properties](#properties)
 		* [visible](#visible)
 		* [animated](#animated)
 		* [cancelable](#cancelable)
@@ -23,6 +24,25 @@ A native popover component for react-native, iOS only.
 
 <!-- /code_chunk_output -->
 
+## Install
+
+npm version < 5.0
+
+```sh
+npm i react-native-popover-ios --save
+```
+
+or npm version >= 5.0
+
+```sh
+npm i react-native-popover-ios
+```
+
+link
+
+```sh
+react-native link react-native-popover-ios
+```
 
 ## Usage
 
@@ -34,7 +54,7 @@ import Popover from 'react-native-popover-ios';
   onShow={this._onShow}
   onHide={this._onHide}
   preferredContentSize={[200, 200]}
-  permittedArrowDirections=[0, 2]>
+  permittedArrowDirections={[0, 2]}>
   {content}
 </Popover>
 ```
