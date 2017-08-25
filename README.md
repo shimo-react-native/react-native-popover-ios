@@ -13,7 +13,8 @@ A native popover component for react-native, iOS only.
 		* [animated](#animated)
 		* [cancelable](#cancelable)
 		* [popoverBackgroundColor](#popoverbackgroundcolor)
-		* [sourceView](#sourceview)
+		* [sourceViewReactTag](#sourceviewreacttag)
+		* [sourceViewTag](#sourceviewtag)
 		* [sourceRect](#sourcerect)
 		* [permittedArrowDirections](#permittedarrowdirections)
 		* [preferredContentSize](#preferredcontentsize)
@@ -94,17 +95,25 @@ the back ground color of popover.
 
 default: 'white'
 
-### sourceView
+### sourceViewReactTag
 
 > the react tag of The view which containing the anchor rectangle for the popover.
 
-example: 6
+default: -1
+
+### sourceViewTag
+
+> tag for the native view containing the anchor rectangle for the popover.
+
+default: -1
 
 ### sourceRect
 
 > the rectangle in the specified view in which to anchor the popover.
 
 default: the frame of the sourceView
+
+usage: [x, y, width, height]
 
 example: [0, 0, 200, 200]
 
@@ -123,7 +132,7 @@ default: [0, 1, 2, 3]
 
 > The preferred size for the view controller’s view.
 
-example: [200, 400], 200 is the width and 400 is the height
+usage: [width, height].
 
 ### onShow
 

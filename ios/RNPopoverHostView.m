@@ -17,6 +17,7 @@
 #import <React/RCTTouchHandler.h>
 
 #import "RNPopoverHostViewController.h"
+#import "RNPopoverTargetManager.h"
 
 @interface RNPopoverHostView ()
 
@@ -49,7 +50,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _animated = YES;
         _cancelable = YES;
         _popoverBackgroundColor = [UIColor whiteColor];
-        _sourceView = NSIntegerMax;
+        _sourceViewTag = -1;
+        _sourceViewReactTag = -1;
         _sourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
         _preferredContentSize = CGSizeZero;
@@ -91,19 +93,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
-        if (_sourceView == NSIntegerMax) {
-            NSLog(@"sourceView must be set");
-            return;
-        }
-        UIView *sourceView = [_bridge.uiManager viewForReactTag:@(_sourceView)];
+        
+        UIView *sourceView = [self autoGetSourceView];
         if (!sourceView) {
             NSLog(@"sourceView is invalid");
             return;
         }
+        NSLog(@"_sourceViewTag: %@", @(_sourceViewTag));
+        NSLog(@"sourceView: %@", sourceView);
         _presented = YES;
         [self updateContentSize];
         _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
-        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.frame : _sourceRect;
+        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.bounds : _sourceRect;
         _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
         _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
         if (!CGSizeEqualToSize(CGSizeZero, _preferredContentSize)) {
@@ -181,6 +182,16 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             [_bridge.uiManager setNeedsLayout];
         }
     });
+}
+
+- (UIView *)autoGetSourceView {
+    UIView *sourceView = nil;
+    if (_sourceViewReactTag >= 0) {
+        sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
+    } else if (_sourceViewTag >= 0) {
+        sourceView = [[RNPopoverTargetManager getInstance] viewForTag:_sourceViewTag];
+    }
+    return sourceView;
 }
 
 #pragma mark - Setter

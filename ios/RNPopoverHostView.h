@@ -35,11 +35,16 @@
 @property (nullable, nonatomic, strong) UIColor *popoverBackgroundColor;
 
 /**
- reactTag for The view containing the anchor rectangle for the popover.
+ tag for the native view containing the anchor rectangle for the popover.
+ */
+@property (nonatomic, assign) NSInteger sourceViewTag;
+
+/**
+ reactTag for the react view containing the anchor rectangle for the popover.
  
  @see https://developer.apple.com/documentation/uikit/uipopoverpresentationcontroller/1622313-sourceview
  */
-@property (nonatomic, assign) NSInteger sourceView;
+@property (nonatomic, assign) NSInteger sourceViewReactTag;
 
 /**
  The rectangle in the specified view in which to anchor the popover.
