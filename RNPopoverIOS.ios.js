@@ -50,9 +50,13 @@ export default class extends Component {
      */
     popoverBackgroundColor: PropTypes.string,
     /**
-     * The `sourceView` prop is the reactTag of The view containing the anchor rectangle for the popover
+     * The `sourceViewReactTag` prop is the reactTag of The view containing the anchor rectangle for the popover
      */
-    sourceView: PropTypes.number,
+    sourceViewReactTag: PropTypes.number,
+    /**
+     * The `sourceViewTag` prop is the tag of The view containing the anchor rectangle for the popover
+     */
+    sourceViewTag: PropTypes.number,
     /**
      * The `sourceRect` prop is the rectangle in the specified view in which to anchor the popover.
      */
@@ -84,6 +88,8 @@ export default class extends Component {
 
   static defaultProps = {
     visible: true,
+    sourceViewTag: -1,
+    sourceViewReactTag: -1
   };
 
   static dismiss = (reactTag, animated = true) => {

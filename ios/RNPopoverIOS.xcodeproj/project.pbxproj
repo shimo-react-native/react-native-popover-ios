@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		286645B31F4DA54800845EC8 /* RNPopoverTargetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 286645B21F4DA54800845EC8 /* RNPopoverTargetManager.m */; };
 		2885F20F1F3DAE90000737CC /* RNPopoverHostView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885F2081F3DAE90000737CC /* RNPopoverHostView.m */; };
 		2885F2101F3DAE90000737CC /* RNPopoverHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885F20A1F3DAE90000737CC /* RNPopoverHostViewController.m */; };
 		2885F2111F3DAE90000737CC /* RNPopoverHostViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2885F20C1F3DAE90000737CC /* RNPopoverHostViewManager.m */; };
@@ -26,6 +27,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPopoverIOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPopoverIOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		286645B11F4DA54800845EC8 /* RNPopoverTargetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPopoverTargetManager.h; sourceTree = "<group>"; };
+		286645B21F4DA54800845EC8 /* RNPopoverTargetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPopoverTargetManager.m; sourceTree = "<group>"; };
 		2885F2071F3DAE90000737CC /* RNPopoverHostView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPopoverHostView.h; sourceTree = "<group>"; };
 		2885F2081F3DAE90000737CC /* RNPopoverHostView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPopoverHostView.m; sourceTree = "<group>"; };
 		2885F2091F3DAE90000737CC /* RNPopoverHostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPopoverHostViewController.h; sourceTree = "<group>"; };
@@ -63,6 +66,8 @@
 				2885F20A1F3DAE90000737CC /* RNPopoverHostViewController.m */,
 				2885F20B1F3DAE90000737CC /* RNPopoverHostViewManager.h */,
 				2885F20C1F3DAE90000737CC /* RNPopoverHostViewManager.m */,
+				286645B11F4DA54800845EC8 /* RNPopoverTargetManager.h */,
+				286645B21F4DA54800845EC8 /* RNPopoverTargetManager.m */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,6 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				286645B31F4DA54800845EC8 /* RNPopoverTargetManager.m in Sources */,
 				2885F2101F3DAE90000737CC /* RNPopoverHostViewController.m in Sources */,
 				2885F2111F3DAE90000737CC /* RNPopoverHostViewManager.m in Sources */,
 				2885F20F1F3DAE90000737CC /* RNPopoverHostView.m in Sources */,
