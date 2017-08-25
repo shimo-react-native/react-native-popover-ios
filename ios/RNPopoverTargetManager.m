@@ -32,7 +32,7 @@
     if (self) {
         _maxTag = 0;
         _tagViewMapTable = [NSMapTable strongToWeakObjectsMapTable];
-        _viewTagMapTable = [NSMapTable strongToWeakObjectsMapTable];
+        _viewTagMapTable = [NSMapTable weakToStrongObjectsMapTable];
     }
     return self;
 }
