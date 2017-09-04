@@ -51,7 +51,7 @@
  
  @see https://developer.apple.com/documentation/uikit/uipopoverpresentationcontroller/1622324-sourcerect
  */
-@property (nonatomic, assign) CGRect sourceRect;
+@property (nullable, nonatomic, strong) NSArray *sourceRect;
 
 /**
  The arrow directions that you prefer for the popover.
@@ -72,7 +72,7 @@
  
  @see https://developer.apple.com/documentation/uikit/uiviewcontroller/1621476-preferredcontentsize
  */
-@property (nonatomic, assign) CGSize preferredContentSize;
+@property (nullable, nonatomic, strong) NSArray *preferredContentSize;
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onShow;
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onHide;
 
