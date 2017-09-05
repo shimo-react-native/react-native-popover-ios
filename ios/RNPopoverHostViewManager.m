@@ -34,9 +34,9 @@ RCT_EXPORT_VIEW_PROPERTY(animated, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(backgroundColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewReactTag, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewTag, NSInteger)
-RCT_EXPORT_VIEW_PROPERTY(sourceRect, CGRect)
+RCT_EXPORT_VIEW_PROPERTY(sourceRect, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(permittedArrowDirections, NSArray)
-RCT_EXPORT_VIEW_PROPERTY(preferredContentSize, CGSize)
+RCT_EXPORT_VIEW_PROPERTY(preferredContentSize, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(onShow, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onHide, RCTDirectEventBlock)
 
@@ -105,7 +105,6 @@ RCT_REMAP_METHOD(dismiss,
         }
         weakSelf.userDismiss = NO;
     }];
-    
 }
 
 @end

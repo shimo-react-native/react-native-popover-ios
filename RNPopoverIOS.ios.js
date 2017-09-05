@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     [side]: 0,
-    top: 0,
+    top: 0
   }
 });
 

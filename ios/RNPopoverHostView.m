@@ -27,6 +27,9 @@
 @property (nonatomic, copy) RCTPromiseRejectBlock dismissReject;
 @property (nonatomic, assign) BOOL presented;
 
+@property (nonatomic, assign) CGRect realSourceRect;
+@property (nonatomic, assign) CGSize realPreferredContentSize;
+
 @end
 
 @implementation RNPopoverHostView {
@@ -52,9 +55,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _popoverBackgroundColor = [UIColor whiteColor];
         _sourceViewTag = -1;
         _sourceViewReactTag = -1;
-        _sourceRect = CGRectNull;
+        _realSourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
-        _preferredContentSize = CGSizeZero;
+        _realPreferredContentSize = CGSizeZero;
         _popoverHostViewController = [[RNPopoverHostViewController alloc] init];
         _popoverHostViewController.popoverPresentationController.delegate = self;
         _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
@@ -99,16 +102,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             NSLog(@"sourceView is invalid");
             return;
         }
-        NSLog(@"_sourceViewTag: %@", @(_sourceViewTag));
-        NSLog(@"sourceView: %@", sourceView);
         _presented = YES;
         [self updateContentSize];
         _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
-        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_sourceRect, CGRectNull) ? sourceView.bounds : _sourceRect;
+        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
         _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
         _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
-        if (!CGSizeEqualToSize(CGSizeZero, _preferredContentSize)) {
-            _popoverHostViewController.preferredContentSize = _preferredContentSize;
+        if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
+            _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
         }
         
         [_delegate presentPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
@@ -173,12 +174,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 }
 
 - (void)updateContentSize {
+    if (!CGSizeEqualToSize(_realPreferredContentSize, CGSizeZero) &&
+        !CGSizeEqualToSize(_popoverHostViewController.preferredContentSize, _realPreferredContentSize)) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
+        });
+    }
+
     dispatch_sync(RCTGetUIManagerQueue(), ^{
         RCTShadowView *shadowView = [_bridge.uiManager shadowViewForReactTag:_contentView.reactTag];
         if (shadowView
-            && !CGSizeEqualToSize(_preferredContentSize, CGSizeZero)
-            && !CGSizeEqualToSize(shadowView.size, _preferredContentSize)) {
-            shadowView.size = _preferredContentSize;
+            && !CGSizeEqualToSize(_realPreferredContentSize, CGSizeZero)
+            && !CGSizeEqualToSize(shadowView.size, _realPreferredContentSize)) {
+            shadowView.size = _realPreferredContentSize;
             [_bridge.uiManager setNeedsLayout];
         }
     });
@@ -196,12 +204,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 #pragma mark - Setter
 
-- (void)setPreferredContentSize:(CGSize)preferredContentSize {
-    if (CGSizeEqualToSize(_preferredContentSize, preferredContentSize)) {
+- (void)setPreferredContentSize:(NSArray *)preferredContentSize {
+    if (preferredContentSize.count != 2 || [_preferredContentSize isEqualToArray:preferredContentSize]) {
         return;
     }
     _preferredContentSize = preferredContentSize;
+    _realPreferredContentSize = CGSizeMake([_preferredContentSize[0] floatValue], [_preferredContentSize[1] floatValue]);
     [self updateContentSize];
+}
+
+- (void)setSourceRect:(NSArray *)sourceRect {
+    if (sourceRect.count != 4 || [_sourceRect isEqualToArray:sourceRect]) {
+        return;
+    }
+    _sourceRect = sourceRect;
+    _realSourceRect = CGRectMake([_sourceRect[0] floatValue], [_sourceRect[1] floatValue], [_sourceRect[2] floatValue], [_sourceRect[3] floatValue]);
 }
 
 @end
