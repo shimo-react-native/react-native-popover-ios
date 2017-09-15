@@ -58,6 +58,10 @@ export default class extends Component {
      */
     sourceViewTag: PropTypes.number,
     /**
+     * The `sourceViewGetterTag` prop is the tag of The view getter which containing the anchor rectangle for the popover
+     */
+    sourceViewGetterTag: PropTypes.number,
+    /**
      * The `sourceRect` prop is the rectangle in the specified view in which to anchor the popover.
      */
     sourceRect: PropTypes.array,
@@ -89,6 +93,7 @@ export default class extends Component {
   static defaultProps = {
     visible: true,
     sourceViewTag: -1,
+    sourceViewGetterTag: -1,
     sourceViewReactTag: -1
   };
 
