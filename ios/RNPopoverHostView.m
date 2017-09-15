@@ -54,6 +54,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _cancelable = YES;
         _popoverBackgroundColor = [UIColor whiteColor];
         _sourceViewTag = -1;
+        _sourceViewGetterTag = -1;
         _sourceViewReactTag = -1;
         _realSourceRect = CGRectNull;
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
@@ -198,6 +199,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
     } else if (_sourceViewTag >= 0) {
         sourceView = [[RNPopoverTargetManager getInstance] viewForTag:_sourceViewTag];
+    } else if (_sourceViewGetterTag >= 0) {
+        sourceView = [[RNPopoverTargetManager getInstance] viewForGetterTag:_sourceViewGetterTag];
     }
     return sourceView;
 }

@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSMapTable *tagViewMapTable;
 @property (nonatomic, strong) NSMapTable *viewTagMapTable;
+@property (nonatomic, strong) NSMutableDictionary *tagGetterDictionary;
 @property (nonatomic, assign) NSUInteger maxTag;
 
 @end
@@ -33,6 +34,7 @@
         _maxTag = 0;
         _tagViewMapTable = [NSMapTable strongToWeakObjectsMapTable];
         _viewTagMapTable = [NSMapTable weakToStrongObjectsMapTable];
+        _tagGetterDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -67,6 +69,26 @@
     
     _maxTag = MAX(_maxTag, tag);
     return YES;
+}
+
+- (BOOL)setGetterTag:(NSInteger)getterTag forGetter:(RNPViewGetterBlock)getter {
+    if (!getter) {
+        return NO;
+    }
+    [_tagGetterDictionary setObject:[getter copy] forKey:@(getterTag)];
+    return YES;
+}
+
+- (RNPViewGetterBlock)getterForGetterTag:(NSUInteger)getterTag {
+    return [_tagGetterDictionary objectForKey:@(getterTag)];
+}
+
+- (__kindof UIView *)viewForGetterTag:(NSUInteger)getterTag {
+    RNPViewGetterBlock getter = [self getterForGetterTag:getterTag];
+    if (getter) {
+        return getter(getterTag);
+    }
+    return nil;
 }
 
 @end

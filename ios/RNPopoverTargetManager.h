@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+typedef UIView * (^RNPViewGetterBlock)(NSInteger tag);
+
 @interface RNPopoverTargetManager : NSObject
 
 @property (nonatomic, strong, readonly) NSMapTable *tagViewMapTable;
@@ -20,5 +22,9 @@
 - (NSUInteger)tagForView:(__kindof UIView *)view;
 - (NSUInteger)autoSetTagForView:(__kindof UIView *)view;
 - (BOOL)setTag:(NSInteger)tag forView:(__kindof UIView *)view;
+
+- (BOOL)setGetterTag:(NSInteger)getterTag forGetter:(RNPViewGetterBlock)getter;
+- (RNPViewGetterBlock)getterForGetterTag:(NSUInteger)getterTag;
+- (__kindof UIView *)viewForGetterTag:(NSUInteger)getterTag;
 
 @end

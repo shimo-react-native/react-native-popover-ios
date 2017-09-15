@@ -15,6 +15,7 @@ A native popover component for react-native, iOS only.
 		* [popoverBackgroundColor](#popoverbackgroundcolor)
 		* [sourceViewReactTag](#sourceviewreacttag)
 		* [sourceViewTag](#sourceviewtag)
+		* [sourceViewGetterTag](#sourceviewgettertag)
 		* [sourceRect](#sourcerect)
 		* [permittedArrowDirections](#permittedarrowdirections)
 		* [preferredContentSize](#preferredcontentsize)
@@ -104,6 +105,12 @@ default: -1
 ### sourceViewTag
 
 > tag for the native view containing the anchor rectangle for the popover.
+
+default: -1
+
+### sourceViewGetterTag
+
+> tag for the native view getter which containing the anchor rectangle for the popover.
 
 default: -1
 
