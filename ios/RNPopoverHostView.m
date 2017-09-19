@@ -99,7 +99,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
         
         UIView *sourceView = [self autoGetSourceView];
-        sourceView = nil;
         if (!sourceView) {
             NSLog(@"sourceView is invalid");
             if (_onHide) {
