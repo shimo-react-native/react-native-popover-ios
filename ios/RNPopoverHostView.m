@@ -11,6 +11,7 @@
 #import <React/RCTAssert.h>
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
+#import <React/RCTUIManagerUtils.h>
 #import <React/RCTUtils.h>
 #import <React/UIView+React.h>
 #import <React/RCTShadowView.h>
