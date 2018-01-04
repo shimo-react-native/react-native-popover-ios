@@ -29,6 +29,7 @@
 
 @property (nonatomic, copy) RCTPromiseResolveBlock dismissResolve;
 @property (nonatomic, copy) RCTPromiseRejectBlock dismissReject;
+@property (nonatomic, assign) BOOL initialized;
 @property (nonatomic, assign) BOOL presented;
 
 @property (nonatomic, assign) CGRect realSourceRect;
@@ -53,6 +54,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (instancetype _Nonnull)initWithBridge:(RCTBridge *_Nullable)bridge {
     if ((self = [super initWithFrame:CGRectZero])) {
         _bridge = bridge;
+        _initialized = NO;
         _presented = NO;
         _animated = YES;
         _cancelable = YES;
@@ -97,9 +99,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (void)didMoveToWindow {
     [super didMoveToWindow];
 
-    if (!_presented && self.window) {
+    if (!_initialized && self.window) {
         RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
 
+        _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
         
         UIView *sourceView = [self autoGetSourceView];
