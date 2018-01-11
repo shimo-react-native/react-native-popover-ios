@@ -100,8 +100,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     [super didMoveToWindow];
 
     if (!_initialized && self.window) {
-        RCTAssert(self.reactViewController, @"Can't present popover view controller without a presenting view controller");
-
         _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
         
