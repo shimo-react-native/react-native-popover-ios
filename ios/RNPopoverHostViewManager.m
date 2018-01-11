@@ -91,7 +91,7 @@ RCT_REMAP_METHOD(dismiss,
         }
     };
     
-    [popoverHostView.reactViewController presentViewController:viewController animated:animated completion:completionBlock];
+    [[self topViewController] presentViewController:viewController animated:animated completion:completionBlock];
 }
 
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {
@@ -107,5 +107,27 @@ RCT_REMAP_METHOD(dismiss,
         weakSelf.userDismiss = NO;
     }];
 }
+
+#pragma mark - Private
+
+- (UIViewController *)topViewController {
+    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+}
+
+- (UIViewController *)topViewControllerWithRootViewController:(UIViewController *)rootViewController {
+    if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabBarController = (UITabBarController *)rootViewController;
+        return [self topViewControllerWithRootViewController:tabBarController.selectedViewController];
+    } else if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = (UINavigationController *)rootViewController;
+        return [self topViewControllerWithRootViewController:navigationController.visibleViewController];
+    } else if (rootViewController.presentedViewController) {
+        UIViewController *presentedViewController = rootViewController.presentedViewController;
+        return [self topViewControllerWithRootViewController:presentedViewController];
+    } else {
+        return rootViewController;
+    }
+}
+
 
 @end
