@@ -31,7 +31,7 @@
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(animated, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(backgroundColor, UIColor)
+RCT_EXPORT_VIEW_PROPERTY(popoverBackgroundColor, UIColor)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewReactTag, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewTag, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(sourceViewGetterTag, NSInteger)
