@@ -45,6 +45,11 @@
 @property (nonatomic, assign) NSInteger sourceViewGetterTag;
 
 /**
+ nativeID for the native view containing the anchor rectangle for the popover.
+ */
+@property (nonatomic, assign) NSString *sourceViewNativeID;
+
+/**
  reactTag for the react view containing the anchor rectangle for the popover.
  
  @see https://developer.apple.com/documentation/uikit/uipopoverpresentationcontroller/1622313-sourceview

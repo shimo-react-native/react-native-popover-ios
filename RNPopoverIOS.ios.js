@@ -62,6 +62,10 @@ export default class extends Component {
      */
     sourceViewGetterTag: PropTypes.number,
     /**
+     * The `sourceViewNativeID` prop is the nativeID of The view containing the anchor rectangle for the popover
+     */
+    sourceViewNativeID: PropTypes.string,
+    /**
      * The `sourceRect` prop is the rectangle in the specified view in which to anchor the popover.
      */
     sourceRect: PropTypes.array,
@@ -87,7 +91,7 @@ export default class extends Component {
     /**
      * The `onHide` prop allows passing a function that will be called once the popover has been hidden.
      */
-    onHide: PropTypes.func,
+    onHide: PropTypes.func
   };
 
   static defaultProps = {

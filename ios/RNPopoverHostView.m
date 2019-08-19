@@ -103,25 +103,26 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
         
-        UIView *sourceView = [self autoGetSourceView];
-        if (!sourceView) {
-            NSLog(@"sourceView is invalid");
-            if (_onHide) {
-                _onHide(nil);
+        [self autoGetSourceView:^(UIView *sourceView) {
+            if (!sourceView) {
+                NSLog(@"sourceView is invalid");
+                if (_onHide) {
+                    _onHide(nil);
+                }
+                return;
             }
-            return;
-        }
-        _presented = YES;
-        [self updateContentSize];
-        _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
-        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
-        _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
-        _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
-        if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
-            _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
-        }
-        
-        [_delegate presentPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
+            _presented = YES;
+            [self updateContentSize];
+            _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
+            _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
+            _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
+            _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
+            if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
+                _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
+            }
+            
+            [_delegate presentPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
+        }];
     }
 }
 
@@ -201,16 +202,24 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     });
 }
 
-- (UIView *)autoGetSourceView {
-    UIView *sourceView = nil;
-    if (_sourceViewReactTag >= 0) {
-        sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
-    } else if (_sourceViewTag >= 0) {
-        sourceView = [[RNPopoverTargetManager getInstance] viewForTag:_sourceViewTag];
-    } else if (_sourceViewGetterTag >= 0) {
-        sourceView = [[RNPopoverTargetManager getInstance] viewForGetterTag:_sourceViewGetterTag];
+- (void)autoGetSourceView:(void (^)(UIView *view))completion {
+    if (_sourceViewNativeID) {
+        __block NSString *nativeID = _sourceViewNativeID;
+        [_bridge.uiManager rootViewForReactTag:self.reactTag withCompletion:^(UIView *view) {
+            completion([_bridge.uiManager viewForNativeID:nativeID withRootTag:view.reactTag]);
+        }];
+    } else {
+        UIView *sourceView = nil;
+        if (_sourceViewReactTag >= 0) {
+            sourceView = [_bridge.uiManager viewForReactTag:@(_sourceViewReactTag)];
+        } else if (_sourceViewTag >= 0) {
+            sourceView = [[RNPopoverTargetManager getInstance] viewForTag:_sourceViewTag];
+        } else if (_sourceViewGetterTag >= 0) {
+            sourceView = [[RNPopoverTargetManager getInstance] viewForGetterTag:_sourceViewGetterTag];
+        }
+        completion(sourceView);
     }
-    return sourceView;
+
 }
 
 #pragma mark - Setter
