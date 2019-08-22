@@ -39,9 +39,7 @@
 
 @implementation RNPopoverHostView {
     __weak RCTBridge *_bridge;
-    
     RCTTouchHandler *_touchHandler;
-    UIView *_contentView;
 }
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame
@@ -139,6 +137,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 - (void)invalidate {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self dismissViewController];
+        self.delegate = nil;
     });
 }
 
@@ -206,7 +205,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     if (_sourceViewNativeID) {
         __block NSString *nativeID = _sourceViewNativeID;
         [_bridge.uiManager rootViewForReactTag:self.reactTag withCompletion:^(UIView *view) {
-            completion([_bridge.uiManager viewForNativeID:nativeID withRootTag:view.reactTag]);
+            UIView *target = [_bridge.uiManager viewForNativeID:nativeID withRootTag:view.reactTag];
+            
+            if (!target) {
+                target = [self.delegate lookupViewForNativeID:nativeID];
+            }
+            
+            completion(target);
         }];
     } else {
         UIView *sourceView = nil;

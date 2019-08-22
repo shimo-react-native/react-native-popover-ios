@@ -20,6 +20,7 @@
 
 - (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nonnull)viewController animated:(BOOL)animated;
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated;
+- (UIView *)lookupViewForNativeID:(NSString *)nativeID;
 
 @end
 
@@ -86,6 +87,7 @@
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onShow;
 @property (nullable, nonatomic, copy) RCTDirectEventBlock onHide;
 
+@property (nullable, nonatomic, copy) UIView *contentView;
 
 #pragma mark - readonly
 

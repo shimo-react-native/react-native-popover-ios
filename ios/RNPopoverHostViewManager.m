@@ -109,6 +109,35 @@ RCT_REMAP_METHOD(dismiss,
     }];
 }
 
+
+- (UIView *)lookupViewForNativeID:(NSString *)nativeID
+{
+    for (RNPopoverHostView *hostView in _hostViews) {
+        UIView *target = [self lookupViewForNativeID:nativeID inView:hostView.contentView];
+        if (target) {
+            return target;
+        }
+    }
+    
+    return nil;
+}
+
+- (UIView *)lookupViewForNativeID:(NSString *)nativeID inView:(UIView *)view
+{
+    RCTAssertMainQueue();
+    if (view != nil && [nativeID isEqualToString:view.nativeID]) {
+        return view;
+    }
+    
+    for (UIView *subview in view.subviews) {
+        UIView *targetView = [self lookupViewForNativeID:nativeID inView:subview];
+        if (targetView != nil) {
+            return targetView;
+        }
+    }
+    return nil;
+}
+
 #pragma mark - Private
 
 - (UIViewController *)topViewController {
