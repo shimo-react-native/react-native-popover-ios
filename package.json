@@ -1,6 +1,6 @@
 {
   "name": "react-native-popover-ios",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "A native popover component for react-native, iOS only.",
   "main": "index.js",
   "scripts": {
