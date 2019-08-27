@@ -92,7 +92,7 @@ RCT_REMAP_METHOD(dismiss,
         }
     };
     
-    [[self topViewController] presentViewController:viewController animated:animated completion:completionBlock];
+    [[popoverHostView reactViewController] presentViewController:viewController animated:animated completion:completionBlock];
 }
 
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {

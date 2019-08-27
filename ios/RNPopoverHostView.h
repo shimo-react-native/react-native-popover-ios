@@ -48,7 +48,7 @@
 /**
  nativeID for the native view containing the anchor rectangle for the popover.
  */
-@property (nonatomic, assign) NSString *sourceViewNativeID;
+@property (nonatomic, strong) NSString *sourceViewNativeID;
 
 /**
  reactTag for the react view containing the anchor rectangle for the popover.
