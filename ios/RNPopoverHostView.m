@@ -100,7 +100,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     if (!_initialized && self.window) {
         _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
-        [self autoGetSourceView:^(UIView *sourceView) {
+        [self autoGetSourceView:^(UIView *sourceView, RNPopoverHostView *popoverHostView) {
             if (!sourceView) {
                 NSLog(@"sourceView is invalid");
                 if (_onHide) {
@@ -118,7 +118,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
                 _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
             }
             
-            [_delegate presentPopoverHostView:self withViewController:_popoverHostViewController animated:_animated];
+            UIViewController *parent;
+            if (popoverHostView == self) {
+                parent = [popoverHostView reactViewController];
+            } else {
+                parent = popoverHostView.popoverHostViewController;
+            }
+            
+            [_delegate presentPopoverHostView:popoverHostView
+                           withViewController:_popoverHostViewController
+                         parentViewController:parent
+                                     animated:_animated];
         }];
     }
 }
@@ -200,17 +210,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     });
 }
 
-- (void)autoGetSourceView:(void (^)(UIView *view))completion {
+- (void)autoGetSourceView:(void (^)(UIView *view, RNPopoverHostView *popoverHostView))completion {
     if (_sourceViewNativeID) {
         __block NSString *nativeID = _sourceViewNativeID;
         [_bridge.uiManager rootViewForReactTag:self.reactTag withCompletion:^(UIView *view) {
             UIView *target = [_bridge.uiManager viewForNativeID:nativeID withRootTag:view.reactTag];
             
             if (!target) {
-                target = [self.delegate lookupViewForNativeID:nativeID];
+                [self.delegate lookupViewForNativeID:nativeID :completion];
+            } else {
+                completion(target, self);
             }
-            
-            completion(target);
         }];
     } else {
         UIView *sourceView = nil;
@@ -221,7 +231,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         } else if (_sourceViewGetterTag >= 0) {
             sourceView = [[RNPopoverTargetManager getInstance] viewForGetterTag:_sourceViewGetterTag];
         }
-        completion(sourceView);
+        completion(sourceView, self);
     }
 
 }

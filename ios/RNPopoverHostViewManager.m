@@ -85,14 +85,17 @@ RCT_REMAP_METHOD(dismiss,
 
 #pragma mark - RNPopoverHostViewInteractor
 
-- (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nonnull)viewController animated:(BOOL)animated {
+- (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nonnull)viewController
+          parentViewController:(RNPopoverHostViewController *_Nonnull)parentViewController
+                      animated:(BOOL)animated {
     dispatch_block_t completionBlock = ^{
         if (popoverHostView.onShow) {
             popoverHostView.onShow(nil);
         }
     };
     
-    [[popoverHostView reactViewController] presentViewController:viewController animated:animated completion:completionBlock];
+    [parentViewController presentViewController:viewController animated:animated completion:completionBlock];
 }
 
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {
@@ -110,16 +113,14 @@ RCT_REMAP_METHOD(dismiss,
 }
 
 
-- (UIView *)lookupViewForNativeID:(NSString *)nativeID
+- (void)lookupViewForNativeID:(NSString *)nativeID :(void (^)(UIView *view, RNPopoverHostView *popoverHostView))completion
 {
     for (RNPopoverHostView *hostView in _hostViews) {
         UIView *target = [self lookupViewForNativeID:nativeID inView:hostView.contentView];
         if (target) {
-            return target;
+            completion(target, hostView);
         }
     }
-    
-    return nil;
 }
 
 - (UIView *)lookupViewForNativeID:(NSString *)nativeID inView:(UIView *)view

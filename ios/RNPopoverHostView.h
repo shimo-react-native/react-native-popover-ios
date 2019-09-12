@@ -18,10 +18,14 @@
 
 @protocol RNPopoverHostViewInteractor <NSObject>
 
-- (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nonnull)viewController animated:(BOOL)animated;
-- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated;
-- (UIView *)lookupViewForNativeID:(NSString *)nativeID;
-
+- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nullable)viewController
+                      animated:(BOOL)animated;
+- (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nonnull)viewController
+          parentViewController:(RNPopoverHostViewController *_Nonnull)parentViewController
+                      animated:(BOOL)animated;
+- (void)lookupViewForNativeID:(NSString *)nativeID :(void (^)(UIView *view, RNPopoverHostView *popoverHostView))completion;
 @end
 
 @interface RNPopoverHostView : RCTView <RCTInvalidating, UIPopoverPresentationControllerDelegate>
