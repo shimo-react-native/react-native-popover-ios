@@ -92,13 +92,24 @@ RCT_REMAP_METHOD(dismiss,
     dispatch_block_t completionBlock = ^{
         if (popoverHostView.onShow) {
             popoverHostView.onShow(nil);
+            popoverHostView.onShow = nil;
         }
     };
     
     [parentViewController presentViewController:viewController animated:animated completion:completionBlock];
 }
 
-- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView withViewController:(RNPopoverHostViewController *_Nullable)viewController animated:(BOOL)animated {
+- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nullable)viewController
+                      animated:(BOOL)animated {
+    [self dismissPopoverHostView:popoverHostView withViewController:viewController animated:animated completion:nil];
+}
+
+
+- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nullable)viewController
+                      animated:(BOOL)animated
+                    completion: (void (^ __nullable)(void))completion {
     __weak typeof(self) weakSelf = self;
     [viewController dismissViewControllerAnimated: self.userDismiss ? self.dismissAnimated : animated completion:^{
         if (weakSelf.dismissResolve) {
@@ -109,6 +120,10 @@ RCT_REMAP_METHOD(dismiss,
             popoverHostView.onHide(nil);
         }
         weakSelf.userDismiss = NO;
+        
+        if (completion) {
+            completion();
+        }
     }];
 }
 

@@ -66,6 +66,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _popoverHostViewController = [[RNPopoverHostViewController alloc] init];
         _popoverHostViewController.popoverPresentationController.delegate = self;
         _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
+        
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self selector:@selector(orientationChanged:)
+         name:UIDeviceOrientationDidChangeNotification
+         object:[UIDevice currentDevice]];
     }
     return self;
 }
@@ -100,36 +106,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     if (!_initialized && self.window) {
         _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
-        [self autoGetSourceView:^(UIView *sourceView, RNPopoverHostView *popoverHostView) {
-            if (!sourceView) {
-                NSLog(@"sourceView is invalid");
-                if (_onHide) {
-                    _onHide(nil);
-                }
-                return;
-            }
-            _presented = YES;
-            [self updateContentSize];
-            _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
-            _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
-            _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
-            _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
-            if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
-                _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
-            }
-            
-            UIViewController *parent;
-            if (popoverHostView == self) {
-                parent = [popoverHostView reactViewController];
-            } else {
-                parent = popoverHostView.popoverHostViewController;
-            }
-            
-            [_delegate presentPopoverHostView:popoverHostView
-                           withViewController:_popoverHostViewController
-                         parentViewController:parent
-                                     animated:_animated];
-        }];
+        [self presentViewController];
     }
 }
 
@@ -147,10 +124,62 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     dispatch_async(dispatch_get_main_queue(), ^{
         [self dismissViewController];
         self.delegate = nil;
+        _popoverHostViewController.popoverPresentationController.delegate = nil;
+    });
+}
+
+#pragma mark - Orientation Notification
+
+- (void) orientationChanged:(NSNotification *)note
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_popoverHostViewController dismissViewControllerAnimated:NO completion:^{
+            _popoverHostViewController.popoverPresentationController.delegate = self;
+            [self presentViewController];
+        }];
+        _presented = NO;
+
     });
 }
 
 #pragma mark - Public
+
+- (void)presentViewController {
+    if (_presented) {
+        return;
+    }
+    
+    [self autoGetSourceView:^(UIView *sourceView, RNPopoverHostView *popoverHostView) {
+        if (!sourceView) {
+            NSLog(@"sourceView is invalid");
+            if (_onHide) {
+                _onHide(nil);
+            }
+            return;
+        }
+        _presented = YES;
+        [self updateContentSize];
+        _popoverHostViewController.popoverPresentationController.sourceView = sourceView;
+        _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
+        _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
+        _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
+        if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
+            _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
+        }
+        
+        UIViewController *parent;
+        if (popoverHostView == self) {
+            parent = [popoverHostView reactViewController];
+        } else {
+            parent = popoverHostView.popoverHostViewController;
+        }
+        
+        [_delegate presentPopoverHostView:popoverHostView
+                       withViewController:_popoverHostViewController
+                     parentViewController:parent
+                                 animated:_animated];
+    }];
+}
 
 - (void)dismissViewController {
     if (_presented) {

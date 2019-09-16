@@ -21,6 +21,10 @@
 - (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
             withViewController:(RNPopoverHostViewController *_Nullable)viewController
                       animated:(BOOL)animated;
+- (void)dismissPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
+            withViewController:(RNPopoverHostViewController *_Nullable)viewController
+                      animated:(BOOL)animated
+                    completion: (void (^ __nullable)(void))completion;
 - (void)presentPopoverHostView:(RNPopoverHostView *_Nullable)popoverHostView
             withViewController:(RNPopoverHostViewController *_Nonnull)viewController
           parentViewController:(RNPopoverHostViewController *_Nonnull)parentViewController
