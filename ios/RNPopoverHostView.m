@@ -64,7 +64,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
         _realPreferredContentSize = CGSizeZero;
         _popoverHostViewController = [[RNPopoverHostViewController alloc] init];
-        _popoverHostViewController.popoverPresentationController.delegate = self;
         _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
         
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -163,6 +162,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _popoverHostViewController.popoverPresentationController.sourceRect = CGRectEqualToRect(_realSourceRect, CGRectNull) ? sourceView.bounds : _realSourceRect;
         _popoverHostViewController.popoverPresentationController.backgroundColor = _popoverBackgroundColor;
         _popoverHostViewController.popoverPresentationController.permittedArrowDirections = [self getPermittedArrowDirections];
+        _popoverHostViewController.popoverPresentationController.delegate = self;
         if (!CGSizeEqualToSize(CGSizeZero, _realPreferredContentSize)) {
             _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
         }
