@@ -174,6 +174,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             parent = popoverHostView.popoverHostViewController;
         }
         
+        if (parent.presentedViewController) {
+            if (_onHide) {
+                _onHide(nil);
+            }
+            return;
+        }
+        
         [_delegate presentPopoverHostView:popoverHostView
                        withViewController:_popoverHostViewController
                      parentViewController:parent
