@@ -69,7 +69,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter]
          addObserver:self selector:@selector(orientationChanged:)
-         name:UIDeviceOrientationDidChangeNotification
+         name:UIApplicationDidChangeStatusBarOrientationNotification
          object:[UIDevice currentDevice]];
     }
     return self;
