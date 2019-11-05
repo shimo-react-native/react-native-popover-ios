@@ -50,8 +50,4 @@
     return CGRectMake(CGRectGetMinX(frame) + safeAreaInsets.left, CGRectGetMinY(frame) + safeAreaInsets.top, CGRectGetWidth(frame) - safeAreaInsets.left - safeAreaInsets.right, CGRectGetHeight(frame) - safeAreaInsets.top - safeAreaInsets.bottom);
 }
 
-#pragma mark - Private
-
-
-
 @end
