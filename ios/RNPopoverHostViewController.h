@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class RNPopoverHostViewController;
+
+@protocol RNPopoverHostViewControllerDelegate <NSObject>
+
+- (void)didContentFrameUpdated:(RNPopoverHostViewController *)viewController;
+
+@end
+
 @interface RNPopoverHostViewController : UIViewController
+
+@property (nonatomic, assign) CGRect contentFrame;
+@property (nonatomic, weak) id<RNPopoverHostViewControllerDelegate> popoverHostDelegate;
 
 @end

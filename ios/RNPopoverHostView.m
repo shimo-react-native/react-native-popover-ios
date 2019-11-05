@@ -23,7 +23,7 @@
 #import "RNPopoverHostViewController.h"
 #import "RNPopoverTargetManager.h"
 
-@interface RNPopoverHostView ()
+@interface RNPopoverHostView () <RNPopoverHostViewControllerDelegate>
 
 @property (nonatomic, strong) RNPopoverHostViewController *popoverHostViewController;
 
@@ -64,6 +64,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         _permittedArrowDirections = @[@(0), @(1), @(2), @(3)];
         _realPreferredContentSize = CGSizeZero;
         _popoverHostViewController = [[RNPopoverHostViewController alloc] init];
+        _popoverHostViewController.popoverHostDelegate = self;
         _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
         
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -76,13 +77,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 }
 
 - (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
-    RCTAssert(_contentView == nil, @"Modal view can only have one subview");
+    RCTAssert(_contentView == nil, @"Popover can only have one subview");
     
     [super insertReactSubview:subview atIndex:atIndex];
-    
-    [_touchHandler attachToView:subview];
     subview.frame = _popoverHostViewController.view.bounds;
-    subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [_touchHandler attachToView:subview];
     [_popoverHostViewController.view insertSubview:subview atIndex:0];
     _contentView = subview;
 }
@@ -99,9 +98,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
     // Do nothing, as subview (singular) is managed by `insertReactSubview:atIndex:`
 }
 
+#pragma mark - UIView
+
 - (void)didMoveToWindow {
     [super didMoveToWindow];
-
+    
     if (!_initialized && self.window) {
         _initialized = YES;
         _popoverHostViewController.view.backgroundColor = _popoverBackgroundColor;
@@ -111,10 +112,26 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-
+    
     if (_presented && !self.superview) {
         [self dismissViewController];
     }
+}
+
+#pragma mark - RNPopoverHostViewControllerDelegate
+
+- (void)didContentFrameUpdated:(RNPopoverHostViewController *)viewController {
+    CGRect frame = viewController.contentFrame;
+    _contentView.frame = frame;
+    RCTExecuteOnUIManagerQueue(^{
+        RCTShadowView *shadowView = [_bridge.uiManager shadowViewForReactTag:_contentView.reactTag];
+        shadowView.top = (YGValue){frame.origin.y, YGUnitPoint};
+        shadowView.left = (YGValue){frame.origin.x, YGUnitPoint};
+        shadowView.width = (YGValue){CGRectGetWidth(frame), YGUnitPoint};
+        shadowView.height = (YGValue){CGRectGetHeight(frame), YGUnitPoint};
+        [shadowView didSetProps:@[@"top", @"left", @"width", @"height"]];
+        [_bridge.uiManager setNeedsLayout];
+    });
 }
 
 #pragma mark - RCTInvalidating
@@ -137,7 +154,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             [self presentViewController];
         }];
         _presented = NO;
-
+        
     });
 }
 
@@ -234,7 +251,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
             _popoverHostViewController.preferredContentSize = _realPreferredContentSize;
         });
     }
-
+    
     dispatch_sync(RCTGetUIManagerQueue(), ^{
         RCTShadowView *shadowView = [_bridge.uiManager shadowViewForReactTag:_contentView.reactTag];
         if (shadowView
@@ -251,7 +268,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         __block NSString *nativeID = _sourceViewNativeID;
         [_bridge.uiManager rootViewForReactTag:self.reactTag withCompletion:^(UIView *view) {
             UIView *target = [_bridge.uiManager viewForNativeID:nativeID withRootTag:view.reactTag];
-            
             if (!target) {
                 [self.delegate lookupViewForNativeID:nativeID :completion];
             } else {
@@ -269,7 +285,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder
         }
         completion(sourceView, self);
     }
-
+    
 }
 
 #pragma mark - Setter

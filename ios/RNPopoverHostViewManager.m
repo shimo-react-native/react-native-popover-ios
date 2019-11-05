@@ -130,12 +130,16 @@ RCT_REMAP_METHOD(dismiss,
 
 - (void)lookupViewForNativeID:(NSString *)nativeID :(void (^)(UIView *view, RNPopoverHostView *popoverHostView))completion
 {
-    for (RNPopoverHostView *hostView in _hostViews) {
-        UIView *target = [self lookupViewForNativeID:nativeID inView:hostView.contentView];
+    UIView *target = nil;
+    RNPopoverHostView *hostView = nil;
+    for (RNPopoverHostView *view in _hostViews) {
+        target = [self lookupViewForNativeID:nativeID inView:view.contentView];
         if (target) {
-            completion(target, hostView);
+            hostView = view;
+            break;
         }
     }
+    completion(target, hostView);
 }
 
 - (UIView *)lookupViewForNativeID:(NSString *)nativeID inView:(UIView *)view
