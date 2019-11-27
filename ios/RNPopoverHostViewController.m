@@ -45,7 +45,12 @@
 #pragma mark - Getter
 
 - (CGRect)contentFrame {
-    UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
+    UIEdgeInsets safeAreaInsets;
+    if (@available(iOS 11.0, *)) {
+        safeAreaInsets = self.view.safeAreaInsets;
+    } else {
+        safeAreaInsets = UIEdgeInsetsZero;
+    }
     CGRect frame = self.view.bounds;
     return CGRectMake(CGRectGetMinX(frame) + safeAreaInsets.left, CGRectGetMinY(frame) + safeAreaInsets.top, CGRectGetWidth(frame) - safeAreaInsets.left - safeAreaInsets.right, CGRectGetHeight(frame) - safeAreaInsets.top - safeAreaInsets.bottom);
 }
